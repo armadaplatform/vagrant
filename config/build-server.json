@@ -1,0 +1,7 @@
+{
+    "host": "vbox.initech.com",
+    "port": 22,
+    "user": "service",
+    "ssh_key": "service@vbox.initech.com.key",
+    "http_proxy": "http://w3cache.initech.com:8080"
+}
