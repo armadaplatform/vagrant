@@ -17,7 +17,6 @@ apt-get install -y git mc jq curl
 
 #--- Install Docker.
 curl -sSL https://get.docker.io/ubuntu/ | sh
-apt-get install -y lxc-docker-1.6.0
 usermod -a -G docker vagrant
 
 if [ -n "${http_proxy}" ]; then
