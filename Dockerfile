@@ -2,7 +2,7 @@ FROM microservice_python
 MAINTAINER Cerebro <cerebro@ganymede.eu>
 
 RUN pip install -U paramiko
-RUN apt-get install -y rsync
+RUN apt-get install -y rsync ssh
 
 ADD ./supervisor/vagrant.conf /etc/supervisor/conf.d/vagrant.conf
 ADD . /opt/vagrant
