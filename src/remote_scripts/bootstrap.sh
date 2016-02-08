@@ -37,5 +37,7 @@ fi
 apt-get clean -y
 apt-get autoclean -y
 apt-get autoremove -y
+
+#--- Remove free space to minimize image size.
 dd if=/dev/zero of=/EMPTY bs=1M 2> /dev/null || true
 rm -f /EMPTY
