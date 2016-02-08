@@ -12,6 +12,8 @@ you can do it using this service.
 
 # Building the service.
 
+## Remotely
+
 `vagrant` needs its configuration at the time of the build so it has to be put inside the container.
 It should be put into the directory `./config/`.
 The main configuration file is called [build-server.json](config/build-server.json) and consists
@@ -36,7 +38,11 @@ Once you have proper configuration set, you can build the service with command:
 
     armada build vagrant
 
+## Locally
 
+    ./build_local.sh [/path/to/armada.box]
+
+In order to use your own box image, assign the environment variable `ARMADA_BOX_URL=file:///absolute/path/to/armada.box`.
 
 # Using the service.
 
