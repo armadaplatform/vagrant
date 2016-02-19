@@ -35,18 +35,19 @@ SCRIPT
 
         if origin_dockyard_address then
             config.vm.provision "shell", inline: <<SCRIPT
-                dockyard_port=55000;
+                dockyard_port=55000
                 [[ -n $(curl -s localhost:8900/list?microservice_name=origin-dockyard-proxy | grep microservice_id) ]] && proxy_started=true || proxy_started=false
                 while [[ "$proxy_started" != "true" && $dockyard_port -lt 55010 ]]
                 do
-                  armada run armada-bind -r origin-dockyard-proxy -e "SERVICE_ADDRESS=#{origin_dockyard_address}" -p ${dockyard_port}:80
-                  status=$?
-                  if [ $status -eq 0 ]; then
-                    proxy_started=true
-                    armada dockyard set origin localhost:$dockyard_port
-                  else
-                    dockyard_port=$((dockyard_port + 1))
-                  fi
+                    armada run armada-bind -r origin-dockyard-proxy -e "SERVICE_ADDRESS=#{origin_dockyard_address}" -p ${dockyard_port}:80
+                    status=$?
+                    if [ $status -eq 0 ]; then
+                        proxy_started=true
+                        armada dockyard set origin localhost:$dockyard_port
+                    else
+                        dockyard_port=$((dockyard_port + 1))
+                        sleep 1
+                    fi
                 done
 SCRIPT
         end
