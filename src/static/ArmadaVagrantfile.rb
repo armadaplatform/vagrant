@@ -35,19 +35,20 @@ SCRIPT
 
         if origin_dockyard_address then
             config.vm.provision "shell", inline: <<SCRIPT
-                is_insecure_dockyard=`armada dockyard set origin #{origin_dockyard_address} | grep insecure | wc -l`
-                if [ $is_insecure_dockyard -gt 0 ] ; then
-                    echo DOCKER_OPTS=\\"\\$DOCKER_OPTS --insecure-registry #{origin_dockyard_address} \\" | sudo tee --append /etc/default/docker
-                    # Wait for Armada to store dockyard address.
-                    is_dockyard_address_stored=0
-                    wait_timeout=15
-                    while [ $is_dockyard_address_stored -eq 0 ] && [ $wait_timeout -gt 0 ]; do
+                dockyard_port=55000
+                [[ -n $(curl -s localhost:8900/list?microservice_name=origin-dockyard-proxy | grep microservice_id) ]] && proxy_started=true || proxy_started=false
+                while [[ "$proxy_started" != "true" && $dockyard_port -lt 55010 ]]
+                do
+                    armada run armada-bind -r origin-dockyard-proxy -e "SERVICE_ADDRESS=#{origin_dockyard_address}" -p ${dockyard_port}:80
+                    status=$?
+                    if [ $status -eq 0 ]; then
+                        proxy_started=true
+                        armada dockyard set origin localhost:$dockyard_port
+                    else
+                        dockyard_port=$((dockyard_port + 1))
                         sleep 1
-                        is_dockyard_address_stored=`grep origin /opt/armada/runtime_settings.json | wc -l`
-                        wait_timeout=$[wait_timeout - 1]
-                    done
-                    service docker restart && service armada restart
-                fi
+                    fi
+                done
 SCRIPT
         end
 
