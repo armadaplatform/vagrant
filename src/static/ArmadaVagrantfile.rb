@@ -33,7 +33,7 @@ def armada_vagrantfile(args={})
             sudo chmod 777 /etc/opt
 SCRIPT
         if origin_dockyard_address then
-            if origin_dockyard_address.index('http://') then
+            if origin_dockyard_address.index('http://') == 0 then
                 http_origin_dockyard_address = origin_dockyard_address
             else
                 http_origin_dockyard_address = 'http://' + origin_dockyard_address
