@@ -45,7 +45,7 @@ SCRIPT
                 do
                     armada run armada-bind -r origin-dockyard-proxy -e "SERVICE_ADDRESS=#{http_origin_dockyard_address}" -p ${dockyard_port}:80
                     status=$?
-                    sleep 1
+                    sleep 2
                     if [ $status -eq 0 ]; then
                         proxy_started=true
                         armada dockyard set origin localhost:$dockyard_port
