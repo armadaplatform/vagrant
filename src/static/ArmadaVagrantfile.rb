@@ -11,7 +11,7 @@ def armada_vagrantfile(args={})
     Vagrant.configure(vagrantfile_api_version) do |config|
 
         config.vm.box = "armada"
-        config.vm.box_url = "http://vagrant.armada.sh/armada.box"
+        config.vm.box_url = ENV.fetch("ARMADA_BOX_URL", "http://vagrant.armada.sh/armada.box")
 
         # Fix for slow (~5s) DNS resolving.
         config.vm.provider :virtualbox do |vb|

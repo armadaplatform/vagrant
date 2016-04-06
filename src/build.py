@@ -34,7 +34,6 @@ def main():
     }
     http_proxy = config.get('http_proxy')
     remote_scripts_path = os.path.join(_get_this_directory(), 'remote_scripts/.')
-    os.system('chmod +x ' + os.path.join(remote_scripts_path, '*.sh'))
     code, out, err = remote.rsync(remote_scripts_path, workspace, remote_address, 'push')
     remote.print_err('PUSH:\ncode:\n{code}\nout:\n{out}\nerr:\n{err}'.format(**locals()))
     assert code == 0
