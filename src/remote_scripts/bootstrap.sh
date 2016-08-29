@@ -13,7 +13,7 @@ apt-get update
 apt-get upgrade -y
 
 #--- Install additional tools.
-apt-get install -y git mc jq curl
+apt-get install -y git mc jq curl socat
 
 #--- Install Docker.
 curl -sSL https://get.docker.com/ | sh
