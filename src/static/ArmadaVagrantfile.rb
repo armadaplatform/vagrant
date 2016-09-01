@@ -45,7 +45,7 @@ SCRIPT
                 do
                     socat TCP-LISTEN:$dockyard_port,fork TCP:#{origin_dockyard_address}:#{origin_dockyard_port} &
                     sleep 1
-                    ps aux | grep -v grep | grep #{origin_dockyard_address}
+                    ps aux | grep socat | grep #{origin_dockyard_address}
                     status=$?
                     if [ $status -eq 0 ]; then
                         echo "Dockyard proxy started on port $dockyard_port"
