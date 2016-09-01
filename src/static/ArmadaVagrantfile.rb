@@ -3,7 +3,6 @@ def armada_vagrantfile(args={})
     microservice_name = args[:microservice_name]
     armada_run_args = args[:armada_run_args]
     origin_dockyard_address = args[:origin_dockyard_address]
-    origin_dockyard_port = args[:origin_dockyard_port]
     configs_dir = args[:configs_dir]
     secret_configs_repository = args[:secret_configs_repository]
 
@@ -35,27 +34,27 @@ def armada_vagrantfile(args={})
 SCRIPT
         if origin_dockyard_address
             origin_dockyard_address = origin_dockyard_address.sub('http://', '')
-
+            origin_dockyard_address, origin_dockyard_port = origin_dockyard_address.split(":")
             unless origin_dockyard_port
                 origin_dockyard_port = 5000
             end
             config.vm.provision "shell", inline: <<SCRIPT
-            dockyard_port=55000
-            [[ -n $(ps aux | grep -v grep | grep #{origin_dockyard_address})  ]] && proxy_started=true || proxy_started=false
-            while [[ "$proxy_started" != "true" && $dockyard_port -lt 55010 ]]
-            do
-                socat TCP-LISTEN:$dockyard_port,fork TCP:#{origin_dockyard_address}:#{origin_dockyard_port} &
-                sleep 1
-                ps aux | grep -v grep | grep #{origin_dockyard_address}
-                status=$?
-                if [ $status -eq 0 ]; then
-                    echo "Dockyard proxy started on port $dockyard_port"
-                    proxy_started=true
-                    armada dockyard set origin localhost:$dockyard_port
-                else
-                    dockyard_port=$((dockyard_port + 1))
-                fi
-            done
+                dockyard_port=55000
+                [[ -n $(ps aux | grep socat | grep #{origin_dockyard_address}) ]] && proxy_started=true || proxy_started=false
+                while [[ "$proxy_started" != "true" && $dockyard_port -lt 55010 ]]
+                do
+                    socat TCP-LISTEN:$dockyard_port,fork TCP:#{origin_dockyard_address}:#{origin_dockyard_port} &
+                    sleep 1
+                    ps aux | grep -v grep | grep #{origin_dockyard_address}
+                    status=$?
+                    if [ $status -eq 0 ]; then
+                        echo "Dockyard proxy started on port $dockyard_port"
+                        proxy_started=true
+                        armada dockyard set origin localhost:$dockyard_port
+                    else
+                        dockyard_port=$((dockyard_port + 1))
+                    fi
+                done
 SCRIPT
         end
 
