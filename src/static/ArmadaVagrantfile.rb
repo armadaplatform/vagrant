@@ -34,16 +34,17 @@ def armada_vagrantfile(args={})
 SCRIPT
         if origin_dockyard_address
             origin_dockyard_address = origin_dockyard_address.sub('http://', '')
-            origin_dockyard_address, origin_dockyard_port = origin_dockyard_address.split(":")
+            origin_dockyard_host, origin_dockyard_port = origin_dockyard_address.split(":")
             unless origin_dockyard_port
                 origin_dockyard_port = 5000
             end
+            origin_dockyard_address = origin_dockyard_host + ':' + origin_dockyard_port
             config.vm.provision "shell", inline: <<SCRIPT
                 dockyard_port=55000
                 [[ -n $(ps aux | grep socat | grep #{origin_dockyard_address}) ]] && proxy_started=true || proxy_started=false
                 while [[ "$proxy_started" != "true" && $dockyard_port -lt 55010 ]]
                 do
-                    socat TCP-LISTEN:$dockyard_port,fork TCP:#{origin_dockyard_address}:#{origin_dockyard_port} &
+                    socat TCP-LISTEN:$dockyard_port,fork TCP:#{origin_dockyard_address} &
                     sleep 1
                     ps aux | grep socat | grep #{origin_dockyard_address}
                     status=$?
