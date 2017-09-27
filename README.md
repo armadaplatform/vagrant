@@ -1,3 +1,5 @@
+# :warning: This repository has been deprecated in favor of [armada-vagrant](https://github.com/armadaplatform/armada-vagrant). :warning:
+
 # vagrant
 
 `vagrant` is a service that is used to build [vagrant](http://vagrantup.com) image that contains preinstalled
